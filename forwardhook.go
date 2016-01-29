@@ -6,20 +6,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
-
-	"github.com/kelseyhightower/envconfig"
 )
 
 // maxRetries indicates the maximum amount of retries we will perform before
 // giving up
 var maxRetries = 10
-
-// Config contains the sites parsed from FORWARDHOOK_SITES
-type Config struct {
-	Sites string
-}
 
 // mirrorRequest will POST through body and headers from an
 // incoming http.Request.
@@ -62,15 +56,10 @@ func mirrorRequest(h http.Header, body []byte, url string) {
 // There is no validation at the moment but you can add 1 or more sites,
 // separated by commas.
 func parseSites() []string {
-	var c Config
+	sites := os.Getenv("FORWARDHOOK_SITES")
 
-	err := envconfig.Process("forwardhook", &c)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	strings := strings.Split(c.Sites, ",")
-	return strings
+	s := strings.Split(sites, ",")
+	return s
 }
 
 func handleHook(sites []string) http.Handler {
