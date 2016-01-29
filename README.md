@@ -7,10 +7,19 @@ setting up 1 webhook endpoint, while we want to send it to more locations.
 Webhooks get retried up to 10 times if the connection failed totally, but a 500
 return response for example will not trigger this behavior.
 
-There is a catch, this will always return a 200, the requests are not proxied
-back to the requester or anything, it's just fire and forget.
+There is a catch, this will always return a 200 to the original webhook
+request. No proxying of requests will be done, it's just fire and forget. So if
+you are dependent on hooks being retried on a non-20x code, *consider yourself
+warned* ;-)
 
-## How to build the docker container
+# How to run
+
+```bash
+go build -a .
+FORWARDHOOK_SITES="http://127.0.0.1:4567,http://127.0.0.1:4568" ./forwardhook
+```
+
+### How to build the docker container
 
 This is based on the [minimal docker container](http://blog.codeship.com/building-minimal-docker-containers-for-go-applications/) article from Codeship.
 
