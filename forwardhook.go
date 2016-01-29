@@ -57,6 +57,10 @@ func mirrorRequest(h http.Header, body []byte, url string) {
 func parseSites() []string {
 	sites := os.Getenv("FORWARDHOOK_SITES")
 
+	if sites == "" {
+		log.Fatal("No sites set up, provide FORWARDHOOK_SITES")
+	}
+
 	s := strings.Split(sites, ",")
 	return s
 }
