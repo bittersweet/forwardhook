@@ -25,9 +25,8 @@ func mirrorRequest(h http.Header, body []byte, url string) {
 
 		client := &http.Client{}
 
-		// Use body of incoming request
-		bR := bytes.NewReader(body)
-		req, err := http.NewRequest("POST", url, bR)
+		rB := bytes.NewReader(body)
+		req, err := http.NewRequest("POST", url, rB)
 		if err != nil {
 			log.Println("[error] http.NewRequest:", err)
 		}
@@ -69,13 +68,14 @@ func handleHook(sites []string) http.Handler {
 			return
 		}
 
-		body, err := ioutil.ReadAll(r.Body)
+		rB, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			log.Printf("fail on readall")
+			log.Printf("Fail on ReadAll")
 		}
+		r.Body.Close()
 
 		for _, url := range sites {
-			go mirrorRequest(r.Header, body, url)
+			go mirrorRequest(r.Header, rB, url)
 		}
 
 		w.WriteHeader(http.StatusOK)
