@@ -39,6 +39,7 @@ func mirrorRequest(h http.Header, body []byte, url string) {
 			log.Println("[error] client.Do:", err)
 			time.Sleep(10 * time.Second)
 		} else {
+			resp.Body.Close()
 			fmt.Printf("[success] %s status=%d\n", url, resp.StatusCode)
 			break
 		}
