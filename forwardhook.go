@@ -87,11 +87,16 @@ func handleHook(sites []string) http.Handler {
 	})
 }
 
+func handleHealthCheck(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
 func main() {
 	sites := parseSites()
 	fmt.Println("Will forward hooks to:", sites)
 
 	http.Handle("/", handleHook(sites))
+	http.HandleFunc("/health-check", handleHealthCheck)
 
 	fmt.Printf("Listening on port 8000\n")
 	err := http.ListenAndServe(":8000", nil)
